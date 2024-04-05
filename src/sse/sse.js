@@ -225,6 +225,11 @@ This extension adds support for Server Sent Events to htmx.  See /www/extensions
         source.close()
       });
     }
+    
+    // If user navigates to another page or closes the tab, close the EventSource 
+    window.addEventListener("beforeunload", function () {
+      source.close()
+    });    
   }
 
   /**
