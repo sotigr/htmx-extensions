@@ -1,7 +1,7 @@
 {
   "name": "htmx-ext-sse",
   "main": "sse.js",
-  "version": "2.1.0",
+  "version": "2.2.2",
   "scripts": {
     "lint": "eslint test/ext test",
     "lint-fix": "eslint test/ext test --fix",
@@ -19,6 +19,6 @@
     "mocha": "10.1.0",
     "mocha-chrome": "https://github.com/Telroshan/mocha-chrome",
     "sinon": "^9.2.4",
-    "htmx": "https://github.com/bigskysoftware/htmx#v2.0.0-alpha2"
+    "htmx.org": "^2.0.2"
   }
 }

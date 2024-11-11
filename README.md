@@ -1,7 +1,7 @@
 # htmx Extensions
 
 [htmx](https://htmx.org) provides an extension mechanism for defining and using extensions within htmx-based applications.
-A list of extensions can be found at <https://extensions.htmx.org>.  If you wish to contribute an extension to that
+A list of extensions can be found at <https://htmx.org/extensions>.  If you wish to contribute an extension to that
 list, open a PR request against <https://github.com/bigskysoftware/htmx-extensions/blob/dev/www/index.html>.
 
 ## Using Extensions
@@ -66,10 +66,12 @@ Extensions can override the following default extension points to add or change 
 
 ```javascript
 {
-    onEvent : function(name, evt) {return true;},
-    transformResponse : function(text, xhr, elt) {return text;},
-    isInlineSwap : function(swapStyle) {return false;},
-    handleSwap : function(swapStyle, target, fragment, settleInfo) {return false;},
-    encodeParameters : function(xhr, parameters, elt) {return null;}
+  init: function(api) { return null },
+  getSelectors: function() { return null },
+  onEvent: function(name, evt) { return true },
+  transformResponse: function(text, xhr, elt) { return text },
+  isInlineSwap: function(swapStyle) { return false },
+  handleSwap: function(swapStyle, target, fragment, settleInfo) { return false },
+  encodeParameters: function(xhr, parameters, elt) { return null }
 }
 ```

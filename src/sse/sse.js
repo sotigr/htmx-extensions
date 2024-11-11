@@ -44,7 +44,12 @@ This extension adds support for Server Sent Events to htmx.  See /www/extensions
         case 'htmx:beforeCleanupElement':
           var internalData = api.getInternalData(parent)
           // Try to remove remove an EventSource when elements are removed
-          if (internalData.sseEventSource) {
+          var source = internalData.sseEventSource
+          if (source) {
+            api.triggerEvent(parent, 'htmx:sseClose', {
+              source,
+              type: 'nodeReplaced',
+            })
             internalData.sseEventSource.close()
           }
 
@@ -203,15 +208,25 @@ This extension adds support for Server Sent Events to htmx.  See /www/extensions
       // Otherwise, try to reconnect the EventSource
       if (source.readyState === EventSource.CLOSED) {
         retryCount = retryCount || 0
-        var timeout = Math.random() * (2 ^ retryCount) * 500
+        retryCount = Math.max(Math.min(retryCount * 2, 128), 1)
+        var timeout = retryCount * 500
         window.setTimeout(function() {
-          ensureEventSourceOnElement(elt, Math.min(7, retryCount + 1))
+          ensureEventSourceOnElement(elt, retryCount)
         }, timeout)
       }
     }
 
     source.onopen = function(evt) {
       api.triggerEvent(elt, 'htmx:sseOpen', { source })
+
+      if (retryCount && retryCount > 0) {
+        const childrenToFix = elt.querySelectorAll("[sse-swap], [data-sse-swap], [hx-trigger], [data-hx-trigger]")
+        for (let i = 0; i < childrenToFix.length; i++) {
+          registerSSE(childrenToFix[i])
+        }
+        // We want to increase the reconnection delay for consecutive failed attempts only
+        retryCount = 0
+      }
     }
 
     api.getInternalData(elt).sseEventSource = source
@@ -221,6 +236,10 @@ This extension adds support for Server Sent Events to htmx.  See /www/extensions
     if (closeAttribute) {
       // close eventsource when this message is received
       source.addEventListener(closeAttribute, function() {
+        api.triggerEvent(elt, 'htmx:sseClose', {
+          source,
+          type: 'message',
+        })
         source.close()
       });
     }
@@ -242,6 +261,10 @@ This extension adds support for Server Sent Events to htmx.  See /www/extensions
     if (!api.bodyContains(elt)) {
       var source = api.getInternalData(elt).sseEventSource
       if (source != undefined) {
+        api.triggerEvent(elt, 'htmx:sseClose', {
+          source,
+          type: 'nodeMissing',
+        })
         source.close()
         // source = null
         return true

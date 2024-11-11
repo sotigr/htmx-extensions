@@ -1,7 +1,7 @@
 {
   "name": "htmx-ext-ws",
   "main": "ws.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "lint": "eslint test/ext test",
     "lint-fix": "eslint test/ext test --fix",
@@ -20,6 +20,6 @@
     "mocha-chrome": "https://github.com/Telroshan/mocha-chrome",
     "mock-socket": "^9.3.1",
     "sinon": "^9.2.4",
-    "htmx": "https://github.com/bigskysoftware/htmx#v2.0.0-beta2"
+    "htmx.org": "^2.0.2"
   }
 }
